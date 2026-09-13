@@ -1,4 +1,6 @@
 import { useState } from "react";
+import useLocalStorage from "./hooks/useLocalStorage";
+
 import "./App.css";
 import Sidebar from "./components/Sidebar";
 import TaskCard from "./components/TaskCard";
@@ -11,9 +13,12 @@ type Task = {
   title: string;
   priority: "Low" | "Medium" | "High";
   completed: boolean;
+
+
 };
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([
+  const [filter, setFilter] = useState<"all" | "pending" | "completed">("all");
+  const [tasks, setTasks] = useLocalStorage<Task[]>("taskflow-tasks", [
     {
       id: 1,
       title: "Finish React Assignment",
@@ -42,15 +47,35 @@ function App() {
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.completed).length;
   const pendingTasks = totalTasks - completedTasks;
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "pending") {
+      return !task.completed;
+    }
+
+    if (filter === "completed") {
+      return task.completed;
+    }
+
+    return true;
+  });
   const toggleTask = (id: number) => {
-  setTasks((currentTasks) =>
-    currentTasks.map((task) =>
-      task.id === id
-        ? { ...task, completed: !task.completed }
-        : task
-    )
-  );
-};
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === id
+          ? { ...task, completed: !task.completed }
+          : task
+      )
+    );
+    const deleteTask = (id: number) => {
+      setTasks((currentTasks) =>
+        currentTasks.filter((task) => task.id !== id)
+      );
+    };
+  };
+  function deleteTask(id: number): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="app">
       <Sidebar />
@@ -82,6 +107,7 @@ function App() {
               title,
               priority,
               completed: false,
+
             };
 
             setTasks((currentTasks) => [...currentTasks, newTask]);
@@ -89,15 +115,41 @@ function App() {
         />
         <section className="tasks-section">
           <h2>My Tasks</h2>
+          <div className="filters">
+            <button
+              className={filter === "all" ? "active" : ""}
+              onClick={() => setFilter("all")}
+            >
+              All
+            </button>
+            <button
+              className={filter === "pending" ? "active" : ""}
+              onClick={() => setFilter("pending")}
+            >
+              Pending
+            </button>
+            <button
+              className={filter === "completed" ? "active" : ""}
+              onClick={() => setFilter("completed")}
+            >
+              Completed
+            </button>
+          </div>
 
-          {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              title={task.title}
-              priority={task.priority}
-              completed={task.completed}
-            />
-          ))}
+          {filteredTasks.length === 0 ? (
+            <p className="empty-message">No tasks found.</p>
+          ) : (
+            filteredTasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                title={task.title}
+                priority={task.priority}
+                completed={task.completed}
+                onToggle={() => toggleTask(task.id)}
+                onDelete={() => deleteTask(task.id)}
+              />
+            ))
+          )}
         </section>
       </main>
     </div>
