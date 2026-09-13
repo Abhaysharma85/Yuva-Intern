@@ -137,12 +137,25 @@
 
 .task-form input,
 .task-form select {
-  padding: 12px;
-  margin-right: 10px;
+  width: 130px;
+  height: 42px;
+  padding: 8px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
+  background: white;
+  color: #111827;
+  cursor: pointer;
 }
 
+.task-form input {
+  width: 195px;
+}
+
+.task-form select {
+  width: 130px;
+  background: white;
+  color: #111827;
+}
 .task-form button {
   padding: 12px 18px;
   border: none;

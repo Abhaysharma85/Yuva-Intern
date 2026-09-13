@@ -6,7 +6,13 @@ type TaskCardProps = {
   onDelete: () => void;
 };
 
-function TaskCard({ title, priority, completed, onToggle,onDelete, }: TaskCardProps) {
+function TaskCard({
+  title,
+  priority,
+  completed,
+  onToggle,
+  onDelete,
+}: TaskCardProps) {
   return (
     <div
       className={`task-card ${completed ? "completed" : ""}`}
@@ -18,19 +24,18 @@ function TaskCard({ title, priority, completed, onToggle,onDelete, }: TaskCardPr
       </div>
 
       <div>
-        {completed ? "✓ Completed" : "Pending"}
-        <div>
-  {completed ? "✓ Completed" : "Pending"}
+        <span>{completed ? "✓ Completed" : "Pending"}</span>
 
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      onDelete();
-    }}
-  >
-    Delete
-  </button>
-</div>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onDelete();
+          }}
+        >
+          Delete
+        </button>
       </div>
     </div>
   );

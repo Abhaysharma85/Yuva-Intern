@@ -30,7 +30,11 @@ function TaskForm({ onAddTask }: TaskFormProps) {
                 onChange={(e) =>
                     setPriority(e.target.value as "Low" | "Medium" | "High")
                 }
-            ></select>
+            >
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
 
             <button onClick={handleSubmit}>Add Task</button>
         </div>
