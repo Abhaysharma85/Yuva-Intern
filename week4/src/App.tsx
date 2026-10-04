@@ -1,122 +1,220 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from "react";
+import Navbar from "./components/Navbar";
+import MovieCard from "./components/MovieCard";
+
+type Movie = {
+  Title: string;
+  Year: string;
+  imdbID: string;
+  Type: string;
+  Poster: string;
+};
+
+type MovieDetails = {
+  Title: string;
+  Year: string;
+  Poster: string;
+  Plot: string;
+  Genre: string;
+  Runtime: string;
+  Director: string;
+  Actors: string;
+  imdbRating: string;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedMovie, setSelectedMovie] =
+    useState<MovieDetails | null>(null);
+  const [detailsLoading, setDetailsLoading] = useState(false);
+
+  const getMovieDetails = async (imdbID: string) => {
+    setDetailsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(
+        `https://www.omdbapi.com/?apikey=${import.meta.env.VITE_OMDB_API_KEY}&i=${imdbID}&plot=full`
+      );
+
+      const data = await response.json();
+
+      if (data.Response === "False") {
+        setError(data.Error || "Unable to load movie details.");
+        return;
+      }
+
+      setSelectedMovie(data);
+    } catch {
+      setError("Unable to load movie details. Please try again.");
+    } finally {
+      setDetailsLoading(false);
+    }
+  };
+
+  const searchMovies = async () => {
+    if (!searchTerm.trim()) {
+      setError("Please enter a movie name.");
+      setMovies([]);
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setSelectedMovie(null);
+
+    try {
+      const response = await fetch(
+        `https://www.omdbapi.com/?apikey=${import.meta.env.VITE_OMDB_API_KEY}&s=${searchTerm}`
+      );
+
+      const data = await response.json();
+
+      if (data.Response === "False") {
+        setError(data.Error || "No movies found.");
+        setMovies([]);
+        return;
+      }
+
+      setMovies(data.Search || []);
+    } catch {
+      setError("Something went wrong. Please try again.");
+      setMovies([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+      <Navbar />
+
+      <main className="app">
+        <h1>Find Your Next Movie</h1>
+
+        <div className="search-area">
+          <input
+            type="text"
+            placeholder="Search for a movie..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                searchMovies();
+              }
+            }}
+          />
+
+          <button onClick={searchMovies}>Search</button>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+
+        {loading && (
+          <div className="status-message">
+            <p>Loading movies...</p>
+          </div>
+        )}
+
+        {error && (
+  <div className="status-message error">
+    <p>{error}</p>
+
+    <button onClick={searchMovies} disabled={loading}>
+  {loading ? "Searching..." : "Search"}
+</button>
+  </div>
+)}
+
+        <div className="movie-grid">
+          {movies.map((movie) => (
+            <MovieCard
+              key={movie.imdbID}
+              movie={movie}
+              onSelect={getMovieDetails}
+            />
+          ))}
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+
+        {detailsLoading && (
+          <div className="status-message">
+            <p>Loading movie details...</p>
+          </div>
+        )}
+      </main>
+
+      {selectedMovie && !detailsLoading && (
+        <div
+          className="modal-overlay"
+          onClick={() => setSelectedMovie(null)}
         >
-          Count is {count}
-        </button>
-      </section>
+          <section
+            className="movie-details"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="modal-close"
+              type="button"
+              onClick={() => setSelectedMovie(null)}
+              aria-label="Close movie details"
+            >
+              ×
+            </button>
 
-      <div className="ticks"></div>
+            <div className="details-poster">
+              {selectedMovie.Poster !== "N/A" && (
+                <img
+                  src={selectedMovie.Poster}
+                  alt={`${selectedMovie.Title} poster`}
+                />
+              )}
+            </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+            <div className="details-content">
+              <h2>{selectedMovie.Title}</h2>
+
+              <p>
+                <strong>Year:</strong> {selectedMovie.Year}
+              </p>
+
+              <p>
+                <strong>Genre:</strong> {selectedMovie.Genre}
+              </p>
+
+              <p>
+                <strong>Runtime:</strong> {selectedMovie.Runtime}
+              </p>
+
+              <p>
+                <strong>IMDb Rating:</strong> ⭐{" "}
+                {selectedMovie.imdbRating}
+              </p>
+
+              <p>
+                <strong>Director:</strong> {selectedMovie.Director}
+              </p>
+
+              <p>
+                <strong>Actors:</strong> {selectedMovie.Actors}
+              </p>
+
+              <p>
+                <strong>Plot:</strong> {selectedMovie.Plot}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => setSelectedMovie(null)}
+              >
+                Close
+              </button>
+            </div>
+          </section>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
