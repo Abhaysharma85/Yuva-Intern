@@ -4,40 +4,46 @@ import { useState } from "react";
 
 type ModalProps = {
   title: string;
-  message: string;
+  children: React.ReactNode;
 };
 
-export default function Modal({ title, message }: ModalProps) {
-  const [isOpen, setIsOpen] = useState(true);
-
-  if (!isOpen) {
-    return null;
-  }
+function Modal({ title, children }: ModalProps) {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div role="dialog"
-        aria-labelledby="modal-title"
-    style={{
-        padding: "20px",
-        margin: "10px",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-      }}
-    >
-      <h2 id="modal-title">{title}</h2>
-      <p>{message}</p>
-
+    <>
       <button
-        onClick={() => setIsOpen(false)}
-        style={{
-          padding: "8px 15px",
-          borderRadius: "5px",
-          border: "none",
-          cursor: "pointer",
-        }}
+        className="ui-button"
+        type="button"
+        onClick={() => setIsOpen(true)}
       >
-        Close
+        Open Modal
       </button>
-    </div>
+
+      {isOpen && (
+        <div
+          className="modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
+          <div className="modal-content">
+            <h2 id="modal-title">{title}</h2>
+
+            <div>{children}</div>
+
+            <button
+              className="ui-button"
+              type="button"
+              onClick={() => setIsOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
+
+export default Modal;

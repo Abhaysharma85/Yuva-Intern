@@ -1,16 +1,14 @@
 type ButtonProps = {
-  text: string;
+  children: React.ReactNode;
+  onClick?: () => void;
 };
 
-export default function Button({ text }: ButtonProps) {
-  return <button 
-     type="button" 
-     style={{
-        padding: "10px 20px",
-        margin: "5px",
-        borderRadius: "5px",
-        border: "none",
-        cursor: "pointer",
-      }}>
-    {text}</button>;
+function Button({ children, onClick }: ButtonProps) {
+  return (
+    <button className="ui-button" onClick={onClick}>
+      {children}
+    </button>
+  );
 }
+
+export default Button;

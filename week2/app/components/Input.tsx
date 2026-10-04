@@ -1,23 +1,21 @@
 type InputProps = {
-  placeholder: string;
   label: string;
+  placeholder?: string;
+  type?: string;
 };
 
-export default function Input({ placeholder, label }: InputProps) {
+function Input({ label, placeholder, type = "text" }: InputProps) {
   return (
-    <div>
+    <div className="input-group">
       <label>{label}</label>
 
       <input
-        type="text"
+        type={type}
         placeholder={placeholder}
-        style={{
-          padding: "10px",
-          margin: "5px",
-          borderRadius: "5px",
-          border: "1px solid #ccc",
-        }}
+        className="ui-input"
       />
     </div>
   );
 }
+
+export default Input;

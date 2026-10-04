@@ -3,16 +3,13 @@ type CardProps = {
   description: string;
 };
 
-export default function Card({ title, description }: CardProps) {
+function Card({ title, description }: CardProps) {
   return (
-    <div style={{
-        padding: "20px",
-        margin: "10px",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-      }}>
-      <h2>{title}</h2>
+    <div className="ui-card">
+      <h3>{title}</h3>
       <p>{description}</p>
     </div>
   );
 }
+
+export default Card;

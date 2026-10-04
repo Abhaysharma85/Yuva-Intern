@@ -1,25 +1,17 @@
-export default function Navbar() {
+function Navbar() {
   return (
-    <nav
-      style={{
-        padding: "15px",
-        borderBottom: "1px solid #ddd",
-        marginBottom: "20px",
-      }}
-    >
-      <h1>My UI Library</h1>
+    <nav className="navbar">
+      <div>
+        <strong>My UI Library</strong>
+      </div>
 
-      <a href="#" style={{ marginRight: "15px" }}>
-        Home
-      </a>
-
-      <a href="#" style={{ marginRight: "15px" }}>
-        About
-      </a>
-
-      <a href="#">
-        Contact
-      </a>
+      <div>
+        <a href="#">Home</a>
+        <a href="#">Components</a>
+        <a href="#">About</a>
+      </div>
     </nav>
   );
 }
+
+export default Navbar;
