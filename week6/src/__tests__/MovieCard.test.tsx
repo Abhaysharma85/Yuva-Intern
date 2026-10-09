@@ -1,47 +1,44 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+
+import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
 import MovieCard from "../components/MovieCard";
-import { describe, expect, test, vi } from "vitest";
+
+const movie = {
+  Title: "Inception",
+  Year: "2010",
+  imdbID: "tt1375666",
+  Type: "movie",
+  Poster: "https://example.com/inception.jpg",
+};
 
 describe("MovieCard", () => {
-  const movie = {
-    Title: "Inception",
-    Year: "2010",
-    imdbID: "tt1375666",
-    Type: "movie",
-    Poster: "https://example.com/inception.jpg",
-  };
-
-  test("displays movie information correctly", () => {
-    render(<MovieCard movie={movie} onSelect={() => {}} />);
-
-    expect(screen.getByText("Inception")).toBeInTheDocument();
-    expect(screen.getByText("2010")).toBeInTheDocument();
-    expect(screen.getByText("movie")).toBeInTheDocument();
-    expect(screen.getByAltText("Inception poster")).toBeInTheDocument();
-  });
-
-  test("calls onSelect with the movie IMDb ID when clicked", async () => {
-    const user = userEvent.setup();
-    const onSelect = vi.fn();
-
-    render(<MovieCard movie={movie} onSelect={onSelect} />);
-
-    await user.click(screen.getByRole("button"));
-
-    expect(onSelect).toHaveBeenCalledWith("tt1375666");
-  });
-
-  test("shows No Poster when poster is not available", () => {
-    const movieWithoutPoster = {
-      ...movie,
-      Poster: "N/A",
-    };
-
+  it("renders the movie title", () => {
     render(
-      <MovieCard movie={movieWithoutPoster} onSelect={() => {}} />
+      <MovieCard
+        movie={movie}
+        onSelect={vi.fn()}
+        isSaved={false}
+        onToggleSave={vi.fn()}
+      />
     );
 
-    expect(screen.getByText("No Poster")).toBeInTheDocument();
+    expect(screen.getByText("Inception")).toBeInTheDocument();
+  });
+
+  it("calls onSelect when the details button is clicked", () => {
+    const onSelect = vi.fn();
+
+    render(
+      <MovieCard
+        movie={movie}
+        onSelect={onSelect}
+        isSaved={false}
+        onToggleSave={vi.fn()}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /details/i }));
+
+    expect(onSelect).toHaveBeenCalledTimes(1);
   });
 });

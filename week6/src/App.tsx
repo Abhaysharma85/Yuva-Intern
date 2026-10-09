@@ -32,6 +32,8 @@ const WATCHLIST_KEY = "movie-explorer-watchlist";
 const SESSION_KEY = "movie-explorer-demo-session";
 
 
+
+
 function readWatchlist(): Movie[] {
   try {
     const value = localStorage.getItem(WATCHLIST_KEY);
@@ -74,6 +76,25 @@ function App() {
   const detailsController = useRef<AbortController | null>(null);
   const searchRequestId = useRef(0);
   const detailsRequestId = useRef(0);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+  try {
+    return localStorage.getItem("movie-explorer-theme") === "dark";
+  } catch {
+    return false;
+  }
+});
+  useEffect(() => {
+  document.documentElement.dataset.theme = isDarkMode ? "dark" : "light";
+
+  try {
+    localStorage.setItem(
+      "movie-explorer-theme",
+      isDarkMode ? "dark" : "light"
+    );
+  } catch {
+    // The app can still work if browser storage is unavailable.
+  }
+}, [isDarkMode]);
 
   useEffect(() => {
     try {
@@ -268,6 +289,10 @@ function App() {
         onViewChange={setActiveView}
         onLoginClick={() => openAuth("login")}
         onSignupClick={() => openAuth("signup")}
+        currentUser={currentUser ?? ""}
+onLogoutClick={handleLogout}
+isDarkMode={isDarkMode}
+onThemeToggle={() => setIsDarkMode((previous) => !previous)}
       />
 
       <main className="main-content">

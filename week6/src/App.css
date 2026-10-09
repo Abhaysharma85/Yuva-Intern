@@ -1067,3 +1067,207 @@
     transform: none;
   }
 }
+
+/* Animated M logo */
+.brand-icon {
+  transform-style: preserve-3d;
+  animation: logo-flip-in 700ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.brand:hover .brand-icon {
+  transform: rotateY(180deg);
+  transition: transform 350ms ease;
+}
+
+@keyframes logo-flip-in {
+  from {
+    opacity: 0;
+    transform: perspective(400px) rotateY(-180deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(400px) rotateY(0);
+  }
+}
+
+/* Theme toggle */
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  opacity: 0.75;
+}
+
+.theme-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.nav-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.nav-user-email {
+  display: block;
+  max-width: 170px;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Dark theme */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --text: #eeeeee;
+  --muted: #aaaaaa;
+  --border: #353535;
+  --surface: #252525;
+  --black: #f0f0f0;
+  background: #171717;
+  color: var(--text);
+}
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+html[data-theme="dark"] .app-shell {
+  background: #171717;
+  color: var(--text);
+}
+
+html[data-theme="dark"] .site-header,
+html[data-theme="dark"] .site-footer,
+html[data-theme="dark"] .movie-card,
+html[data-theme="dark"] .account-status,
+html[data-theme="dark"] .movie-modal,
+html[data-theme="dark"] .auth-modal {
+  background: #202020;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+html[data-theme="dark"] .brand,
+html[data-theme="dark"] .section-heading h2,
+html[data-theme="dark"] .movie-card-title,
+html[data-theme="dark"] .details-content h2,
+html[data-theme="dark"] .account-status strong,
+html[data-theme="dark"] .details-content strong,
+html[data-theme="dark"] .auth-modal h2 {
+  color: var(--text);
+}
+
+html[data-theme="dark"] .hero-section h1 span,
+html[data-theme="dark"] .hero-description,
+html[data-theme="dark"] .hero-hint,
+html[data-theme="dark"] .eyebrow,
+html[data-theme="dark"] .movie-card-year,
+html[data-theme="dark"] .results-count,
+html[data-theme="dark"] .account-status,
+html[data-theme="dark"] .details-meta,
+html[data-theme="dark"] .details-plot,
+html[data-theme="dark"] .details-content > p:not(.eyebrow, .details-meta, .details-plot),
+html[data-theme="dark"] .auth-description,
+html[data-theme="dark"] .auth-switch,
+html[data-theme="dark"] .auth-demo-note {
+  color: #b5b5b5;
+}
+
+html[data-theme="dark"] .nav-link,
+html[data-theme="dark"] .login-link,
+html[data-theme="dark"] .theme-toggle,
+html[data-theme="dark"] .text-button,
+html[data-theme="dark"] .movie-details-button,
+html[data-theme="dark"] .watchlist-button,
+html[data-theme="dark"] .modal-close {
+  background: #292929;
+  color: #eeeeee;
+  border-color: #444444;
+}
+
+html[data-theme="dark"] .nav-link:hover,
+html[data-theme="dark"] .nav-link.active,
+html[data-theme="dark"] .login-link:hover,
+html[data-theme="dark"] .text-button:hover,
+html[data-theme="dark"] .movie-details-button:hover,
+html[data-theme="dark"] .watchlist-button:hover,
+html[data-theme="dark"] .modal-close:hover {
+  background: #383838;
+}
+
+html[data-theme="dark"] .signup-link,
+html[data-theme="dark"] .auth-submit,
+html[data-theme="dark"] .details-watchlist-button,
+html[data-theme="dark"] .empty-state button {
+  background: #eeeeee;
+  color: #171717;
+  border-color: #eeeeee;
+}
+
+html[data-theme="dark"] .search-form input,
+html[data-theme="dark"] .auth-form input {
+  background: #252525;
+  color: #eeeeee;
+  border-color: #444444;
+}
+
+html[data-theme="dark"] .search-form input::placeholder {
+  color: #aaaaaa;
+}
+
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .poster-placeholder,
+html[data-theme="dark"] .movie-card-image-button {
+  background: #282828;
+  border-color: var(--border);
+  color: #b5b5b5;
+}
+
+html[data-theme="dark"] .empty-state h3,
+html[data-theme="dark"] .auth-form label {
+  color: #eeeeee;
+}
+
+html[data-theme="dark"] .auth-switch button {
+  color: #ffffff;
+}
+
+@media (max-width: 720px) {
+  .nav-user-email {
+    max-width: 105px;
+  }
+
+  .nav-account {
+    gap: 6px;
+  }
+
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-icon {
+    animation: none;
+  }
+
+  .brand:hover .brand-icon {
+    transform: none;
+    transition: none;
+  }
+}

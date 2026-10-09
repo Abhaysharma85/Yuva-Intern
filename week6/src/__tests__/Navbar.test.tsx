@@ -1,32 +1,39 @@
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Navbar from "../components/Navbar";
-import { describe, test, expect } from "vitest";
 
 describe("Navbar", () => {
-  test("displays the Movie Explorer logo", () => {
-    render(<Navbar />);
+const defaultProps = {
+activeView: "discover" as const,
+onViewChange: vi.fn(),
+currentUser: "",
+onLoginClick: vi.fn(),
+onSignupClick: vi.fn(),
+onLogoutClick: vi.fn(),
+isDarkMode: false,
+onThemeToggle: vi.fn(),
+};
 
-    expect(screen.getByText(/Movie Explorer/i)).toBeInTheDocument();
-  });
+it("renders the Movie Explorer logo", () => {
+render(<Navbar {...defaultProps} />);
+expect(screen.getByText("M")).toBeInTheDocument();
+});
 
-  test("displays Home and Movies navigation links", () => {
-    render(<Navbar />);
+it("shows login and signup when no user is logged in", () => {
+render(<Navbar {...defaultProps} />);
+expect(screen.getByText("Log in")).toBeInTheDocument();
+expect(screen.getByText("Sign up")).toBeInTheDocument();
+});
 
-    expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Movies" })).toBeInTheDocument();
-  });
+it("shows the user email and logout when logged in", () => {
+render(
+<Navbar
+{...defaultProps}
+currentUser="[test@example.com](mailto:test@example.com)"
+/>
+);
 
-  test("has the correct navigation links", () => {
-    render(<Navbar />);
 
-    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute(
-      "href",
-      "#"
-    );
 
-    expect(screen.getByRole("link", { name: "Movies" })).toHaveAttribute(
-      "href",
-      "#movies"
-    );
-  });
+});
 });

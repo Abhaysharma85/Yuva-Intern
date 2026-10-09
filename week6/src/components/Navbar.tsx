@@ -1,16 +1,25 @@
 
 type NavbarProps = {
-  activeView?: "discover" | "watchlist";
-  onViewChange?: (view: "discover" | "watchlist") => void;
-  onLoginClick?: () => void;
-  onSignupClick?: () => void;
+  activeView: "discover" | "watchlist";
+  onViewChange: (view: "discover" | "watchlist") => void;
+  currentUser: string;
+  onLoginClick: () => void;
+  onSignupClick: () => void;
+  onLogoutClick: () => void;
+  isDarkMode: boolean;
+  onThemeToggle: () => void;
+  
 };
 
 function Navbar({
-  activeView = "discover",
-  onViewChange = () => {},
-  onLoginClick = () => {},
-  onSignupClick = () => {},
+  activeView,
+  onViewChange,
+  currentUser,
+  onLoginClick,
+  onSignupClick,
+  onLogoutClick,
+  isDarkMode,
+  onThemeToggle,
 }: NavbarProps) {
   return (
     <header className="site-header">
@@ -21,12 +30,16 @@ function Navbar({
           onClick={() => onViewChange("discover")}
           aria-label="Movie Explorer home"
         >
-          <span className="brand-icon" aria-hidden="true">M</span>
+          <span className="brand-icon" aria-hidden="true">
+            M
+          </span>
           <span>movie explorer</span>
-          <span className="brand-period" aria-hidden="true">.</span>
+          <span className="brand-period" aria-hidden="true">
+            .
+          </span>
         </a>
 
-        <div className="nav-links">
+        <div className="nav-links" aria-label="Movie sections">
           <button
             className={`nav-link ${activeView === "discover" ? "active" : ""}`}
             type="button"
@@ -47,12 +60,51 @@ function Navbar({
         </div>
 
         <div className="nav-actions">
-          <button className="login-link" type="button" onClick={onLoginClick}>
-            Log in
+          <button
+            className="theme-toggle"
+            type="button"
+            onClick={onThemeToggle}
+            aria-label={
+              isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+            }
+            title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            <span className="theme-icon" aria-hidden="true">
+              {isDarkMode ? "☀" : "☾"}
+            </span>
           </button>
-          <button className="signup-link" type="button" onClick={onSignupClick}>
-            Sign up
-          </button>
+
+          {currentUser ? (
+            <div className="nav-account">
+              <span className="nav-user-email" title={currentUser}>
+                {currentUser}
+              </span>
+              <button
+                className="login-link"
+                type="button"
+                onClick={onLogoutClick}
+              >
+                Log out
+              </button>
+            </div>
+          ) : (
+            <>
+              <button
+                className="login-link"
+                type="button"
+                onClick={onLoginClick}
+              >
+                Log in
+              </button>
+              <button
+                className="signup-link"
+                type="button"
+                onClick={onSignupClick}
+              >
+                Sign up
+              </button>
+            </>
+          )}
         </div>
       </nav>
     </header>
