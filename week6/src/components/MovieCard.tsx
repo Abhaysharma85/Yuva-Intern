@@ -1,3 +1,4 @@
+
 type Movie = {
   Title: string;
   Year: string;
@@ -12,38 +13,40 @@ type MovieCardProps = {
 };
 
 function MovieCard({ movie, onSelect }: MovieCardProps) {
+  const hasPoster = movie.Poster && movie.Poster !== "N/A";
+
   return (
-    <button
-      className="movie-card"
-      type="button"
-      // Send the selected movie's IMDb ID to the parent component
-      // so its full details can be fetched from the API.
-      onClick={() => onSelect(movie.imdbID)}
-    >
-      <div className="movie-poster">
-        {movie.Poster !== "N/A" ? (
-          <img
-            src={movie.Poster}
-            alt={`${movie.Title} poster`}
-            // Posters are loaded only when they are close to being visible,
-            // which helps reduce unnecessary image loading.
-            loading="lazy"
-          />
-        ) : (
-          // OMDb sometimes does not provide a poster for a movie.
-          <div className="no-poster">No Poster</div>
-        )}
-      </div>
+    <article className="movie-card">
+      <button
+        className="movie-card-button"
+        type="button"
+        onClick={() => onSelect(movie.imdbID)}
+        aria-label={`View details for ${movie.Title}, ${movie.Year}`}
+      >
+        <div className="movie-poster">
+          {hasPoster ? (
+            <img
+              src={movie.Poster}
+              alt={`${movie.Title} movie poster`}
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <div className="poster-placeholder">
+              <span aria-hidden="true">🎬</span>
+              <span>Poster unavailable</span>
+            </div>
+          )}
 
-      <div className="movie-info">
-        <h2>{movie.Title}</h2>
-
-        <div className="movie-meta">
-          <span>{movie.Year}</span>
-          <span>{movie.Type}</span>
+          <span className="poster-type">{movie.Type}</span>
         </div>
-      </div>
-    </button>
+
+        <div className="movie-card-info">
+          <h3>{movie.Title}</h3>
+          <p>{movie.Year}</p>
+        </div>
+      </button>
+    </article>
   );
 }
 
