@@ -12,7 +12,7 @@ type NavbarProps = {
 function Navbar({
   title = "Movie Explorer",
   links = [
-    { label: "Home", href: "/" },
+    { label: "Home", href: "#" },
     { label: "Movies", href: "#movies" },
   ],
 }: NavbarProps) {

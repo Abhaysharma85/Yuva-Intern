@@ -2,6 +2,7 @@ import Navbar from "./components/Navbar";
 import MovieCard from "./components/MovieCard";
 import Button from "./components/Button";
 import Input from "./components/Input";
+
 import { useEffect, useState } from "react";
 
 type Movie = {
